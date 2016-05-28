@@ -115,6 +115,7 @@ int USKeyboard=1;                                 // Select 1 for US Keyboard or
 int HybridKeyboard=1;                             // Select 0 for normal or 1 for the left shift key allowing all f keys and cursor keys in windows mode. (Also has a shifted restore key)
 
 
+
 char keyMapUS[216]={
 
 212,176,215,200,194,196,198,217,0,                //  Del Return LR F7 F1 F3 F5 UD Null
@@ -140,9 +141,9 @@ char keyMapUS[216]={
 53,114,100,54,99,102,116,120,0,                   //  5 R D 6 C F T X Null
 55,121,103,56,98,104,117,118,0,                   //  7 Y G 8 B H U V Null
 57,105,106,48,109,107,111,110,0,                  //  9 I J Zero M K O N Null
-223,112,108,45,46,59,91,44,0,                      //  + P L - . : @ , Null
-92,93,39,210,133,61,212,47,203,                   //  Pound * ; Home RSHFT = Pi / Restore
-49,177,179,50,32,128,113,130,0,                   //  1 BS CTRL 2 SPC C= Q RunStop Null
+45,112,108,61,46,59,91,44,0,                      //  + P L - . : @ , Null
+209,93,39,210,133,92,212,47,205,                  //  Pound * ; Home RSHFT = Pi / Restore
+49,223,9,50,32,128,113,177,0,                     //  1 BS CTRL 2 SPC C= Q RunStop Null
 
 };
 
@@ -300,7 +301,7 @@ void loop() // main keyboard scanning loop
         {
         if ((keyPos!=16&&keyPos!=58)||windowsShift==1) // not-shift or windows mode
           {
-          lastDebounceTime[keyPos] = millis5555555555555555555555555555555555555555555555555555555555555566666666666(555555)56;  // reset keybounce delay
+          lastDebounceTime[keyPos] = millis();  // reset keybounce delay
           Keyboard.release(keyDown[keyPos]);    // pass key release to windows
           }
           else { lastDebounceTime[keyPos]=millis(); shift=0; } // reset keybounce delay and mark as un-shifted
