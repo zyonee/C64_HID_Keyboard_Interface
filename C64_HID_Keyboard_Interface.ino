@@ -119,9 +119,9 @@ int outPin=2;
 int outPinSet=0;
 int i;
 int windowsShift;
-int DefaultKBMode=0;                                           // Select 0 For Windows Mode On startup or 1 for C64 Mode
-int USKeyboard=1;                                              // Select 1 for US Keyboard or 0 For EU
 int HybridKeyboard=1;                                          // Select 0 for normal or 1 for the left shift key allowing all f keys and cursor keys in windows mode. (Also has a shifted restore key)
+int C64Mode=0;                                                 // Select 0 For Windows Mode On startup or 1 for C64 Mode
+int USKeyboard=1;                                              // Select 1 for US Keyboard or 0 For EU
 
 char keyMapUS[216]={
 
@@ -185,9 +185,23 @@ char keyMapEU[216]={
 };
 
 char Hybridkeys[7]{
-                                                  // Hybrid Keys. These are the shifted values.
-216,201,195,197,199,218,205,                      // LR F8 F2 F4 F6 UD Restore
+                                                               // Hybrid Keys. These are the shifted values.
+216,201,195,197,199,218,205,                                   // LR F8 F2 F4 F6 UD Restore
 };
+int RXLED = 17;                                                // The RX LED has a defined Arduino pin
+
+void blinkLED(int reps)
+{
+  for (int i=0; i<reps; i++)
+  {
+    digitalWrite(RXLED, LOW);
+    delay(125);
+    digitalWrite(RXLED, HIGH);
+    delay(125);
+  }
+  delay(250);
+}
+
 void setup() {
   Keyboard.begin();                                            // initialize control over the keyboard:
 
@@ -211,6 +225,12 @@ void setup() {
   pinMode(A2,INPUT_PULLUP);
   pinMode(A3,INPUT_PULLUP);
   pinMode(1,INPUT_PULLUP);
+                                                               // The TX LED was not so lucky, we'll need to use pre-defined
+                                                               // macros (TXLED1, TXLED0) to control that.
+                                                               // (We could use the same macros for the RX LED too -- RXLED1,
+                                                               // and RXLED0.)
+  pinMode(RXLED, OUTPUT);                                      // Set RX LED as an output
+  Serial.begin(9600);                                          // This pipes to the serial monitor
 
   digitalWrite(2,LOW);                                         // start with one active pin to detect '1' and '2'
   digitalWrite(3,HIGH);
@@ -221,10 +241,10 @@ void setup() {
   digitalWrite(8,HIGH);
   digitalWrite(9,HIGH);
 
-  if (DefaultKBMode==0) windowsShift=1; else windowsShift=0;
+  if (C64Mode==0) windowsShift=1; else windowsShift=0;
 
 // detect if '1' or '2' are held on power up to swap modes and keymaps
-  if (DefaultKBMode==1)                                        // if the default mode is C64 mode
+  if (C64Mode==1)                                              // if the default mode is C64 mode
   {
     if (!digitalRead(10))                                      // read key '1'
     {
@@ -240,7 +260,7 @@ void setup() {
     }
   }
 
-  if (DefaultKBMode==0)                                        // if the default mode is C64 mode
+  if (C64Mode==0)                                              // if the default mode is Windows mode
   {
     digitalWrite(2,LOW);                                       // need to reset pin 2 before each read
     if (!digitalRead(10))                                      // read key '1'
@@ -256,11 +276,38 @@ void setup() {
       }
     }
   }
-}
+  digitalWrite(2,LOW);                                         // need to reset pin 2 before each read
+  if (!digitalRead(16))                                        // read key '↑'
+  {
+    if (HybridKeyboard==0)                                     // Change HybridKeyboard setting to oposite if pressed
+    {
+      HybridKeyboard=1;
+    } else {
+      HybridKeyboard=0;
 
+    }
+  }
+
+  delay(1000);
+  if (HybridKeyboard==1)
+    {
+      blinkLED(1);
+    }
+  if (C64Mode==3)
+    {
+      blinkLED(2);
+    }
+  if (USKeyboard==1)
+    {
+      blinkLED(3);
+    }
+  digitalWrite(RXLED, HIGH);
+
+}
 
 void loop()                                                    // main keyboard scanning loop
 {
+
   for (outPin=2;outPin<10; outPin++)                           // scan through all rows
     {
     pinMode(2,INPUT);                                          // set unused (all) outputs to input to avoid ghosting
