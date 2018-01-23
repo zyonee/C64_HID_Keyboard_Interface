@@ -120,19 +120,140 @@ int outPinSet=0;
 int i;
 int windowsShift;
 int HybridKeyboard=1;                                          // Select 0 for normal or 1 for the left shift key allowing all f keys and cursor keys in windows mode. (Also has a shifted restore key)
-int C64Mode=0;                                                 // Select 0 For Windows Mode On startup or 1 for C64 Mode
-int USKeyboard=1;                                              // Select 1 for US Keyboard or 0 For EU
+int C64Mode=1;                                                 // Select 0 For Windows Mode On startup or 1 for C64 Mode
+int USKeyboard=0;                                              // Select 1 for US Keyboard or 0 For EU
 
 char keyMapUS[216]={
 
-212,176,215,200,194,196,198,217,0,                             //  Del Return LR F7 F1 F3 F5 UD Null
-51,119,97,52,122,115,101,129,0,                                //  3 W A 4 Z S E LSHFT Null
+/*
+1=
+...
+7=
+8=BackSpace
+9=Tab
+10=Return
+11=
+...
+22=
+23=
+24=
+25=
+26=
+27=
+28=
+29=
+30=
+31=
+32=spc
+33=!
+34=Ä
+35=#
+36=¤
+37=%
+38=/
+39=ä
+40=)
+41==
+42=(
+43='
+44=,
+45=+
+46=.
+47=-
+58=Ö
+59=ö
+60=;
+61=´ död accent
+62=:
+63=_
+64="
+65=A (shiftad A) 
+...
+90=Z (shiftad Z)
+91=å
+92=' den utan död
+93=" död accent
+94=&
+95=?
+96=§
+97=a
+...osv
+122=z
+123=Å (shiftad å)
+124=*
+125=^ död accent
+126=½
+127=
+128=Control_L
+129=Shift_L
+130=Alt_L
+131=Super_L
+132=Control_R
+133=Shift_R
+134=ISO_Level3_Shift
+135=Super_R (Windows_Right_button)
+176=RETURN
+177=Escape
+178=BackSpace
+179=Tab
+180=space
+181=+
+182=´ (dead_acute)
+184=" (dead_diaeresis)
+185=' (apostrophe)
+186=' (apostrophe)
+193=Caps_Lock
+194=F1
+...
+205=F12
+206=Print
+207=Scroll_Lock
+208=Pause
+209=Insert
+210=Home
+211=Prior (Page_Up)
+212=Delete
+213=End
+214=Next (Page_Down)
+215=Right
+216=Left
+217=Down
+218=Up
+219=Num_Lock
+220=/ (KP_divide)
+221=* (KP_multiply)
+222=- (KP_substract)
+223=+ (KP_add)
+224=RETURN (KP_enter)
+225=KP_End
+226=KP_Down
+227=KP_Next
+228=KP_Left
+229=KP_Begin
+230=KP_Right
+231=KP_Home
+232=KP_Up
+233=KP_Prior (KP_pgup)
+234=KP_Insert
+235=KP_delete
+236=<
+237=Menu (höger musknapp)
+238=
+...
+246=
+...
+255=
+*/
+
+
+KEY_DELETE,KEY_RETURN,KEY_RIGHT_ARROW,200,194,196,198,KEY_DOWN_ARROW,0, //  Del Return LR F7 F1 F3 F5 UD Null
+51,119,97,52,122,115,101,KEY_LEFT_SHIFT,0,                     //  3 W A 4 Z S E LSHFT Null
 53,114,100,54,99,102,116,120,0,                                //  5 R D 6 C F T X Null
 55,121,103,56,98,104,117,118,0,                                //  7 Y G 8 B H U V Null
 57,105,106,48,109,107,111,110,0,                               //  9 I J Zero M K O N Null
-43,112,108,45,46,58,64,44,0,                                   //  + P L - . : @ , Null     (US Keyboard)
-35,42,59,210,133,61,211,47,205,                                //  Pound * ; Home RSHFT = Pi / Restore
-49,178,128,50,32,135,113,177,0,                                //  1 BS CTRL 2 SPC C= Q RunStop Null
+45,112,108,47,46,62,65,44,0,                                   //  + P L - . : @ , Null     (US Keyboard)
+49,124,60,KEY_HOME,KEY_RIGHT_SHIFT,41,KEY_PAGE_DOWN,38,211,    //  Pound * ; Home RSHFT = Pi / Restore
+49,KEY_END,KEY_TAB,50,32,KEY_LEFT_CTRL,113,KEY_ESC,0,          //  1 BS CTRL 2 SPC C= Q RunStop Null
 
 209,176,216,201,195,197,199,218,0,                             //  Del Return LR F8 F2 F4 F6 UD Null
 92,87,65,36,90,83,69,129,0,                                    //  # W A $ Z S E LSHFT Null
@@ -140,10 +261,10 @@ char keyMapUS[216]={
 39,89,71,40,66,72,85,86,0,                                     //  ' Y G ( B H U V Null
 41,73,74,48,77,75,79,78,0,                                     //  ) I J Zero M K O N Null
 43,80,76,95,62,91,96,60,0,                                     //  + P L - > : @ < Null
-35,42,93,210,133,61,214,63,205,                                //  Pound * ; Home RSHFT = Pi ? Restore
+35,42,93,210,133,61,214,95,205,                                //  Pound * ; Home RSHFT = Pi ? Restore
 33,178,128,34,32,135,81,177,0,                                 //  ! BS CTRL " SPC C= Q RS Null     (US Keyboard)
 
-178,176,215,200,194,196,198,217,0,                             //  Del Return LR F7 F1 F3 F5 UD Null
+178,176,216,200,194,196,198,217,0,                             //  Del Return LR F7 F1 F3 F5 UD Null
 51,119,97,52,122,115,101,129,0,                                //  3 W A 4 Z S E LSHFT Null
 53,114,100,54,99,102,116,120,0,                                //  5 R D 6 C F T X Null
 55,121,103,56,98,104,117,118,0,                                //  7 Y G 8 B H U V Null
@@ -195,11 +316,11 @@ void blinkLED(int reps)
   for (int i=0; i<reps; i++)
   {
     digitalWrite(RXLED, LOW);
-    delay(125);
+    delay(150);
     digitalWrite(RXLED, HIGH);
-    delay(125);
+    delay(150);
   }
-  delay(250);
+  delay(500);
 }
 
 void setup() {
@@ -293,7 +414,7 @@ void setup() {
     {
       blinkLED(1);
     }
-  if (C64Mode==3)
+  if (C64Mode==1)
     {
       blinkLED(2);
     }
@@ -302,7 +423,6 @@ void setup() {
       blinkLED(3);
     }
   digitalWrite(RXLED, HIGH);
-
 }
 
 void loop()                                                    // main keyboard scanning loop
